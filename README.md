@@ -1,6 +1,4 @@
-BON2 [![Build Status](http://ci.tterrag.com/buildStatus/icon?job=BON2)](http://ci.tterrag.com/job/BON2/)
-====
+Look in releases
 
-A rewrite for Immibis's bearded-octo-nemesis for ForgeGradle.
-
-Old releases available in releases tab. Newer releases available on [Jenkins](http://ci.tterrag.com/job/BON2/).
+This is a fork of a fork to provide an updated build for an 
+otherwise stale project with dead hardcoded URLs.
