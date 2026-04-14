@@ -59,7 +59,6 @@ public class BON2 {
                 System.err.println("Must be a valid path to versions.json");
                 e1.printStackTrace();
             } finally {
-                // parse
                 if (!successVer) {
                     VersionLookup.INSTANCE.refresh();
                 }
