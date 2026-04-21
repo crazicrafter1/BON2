@@ -50,6 +50,11 @@ public class BON2Impl {
         List<File> files = IOUtils.getJavaSrcFiles(inputPath);
         //ClassCollection outputCC = Remapper.remap(inputCC, progressListener);
 
+        if (files.isEmpty()) {
+            BON2.logErr("No convertible .java source files in " + inputPath);
+            return;
+        }
+
         progressListener.start(files.size(), "Remapping");
         int classesRemapped = 0;
         for (File file : files) {

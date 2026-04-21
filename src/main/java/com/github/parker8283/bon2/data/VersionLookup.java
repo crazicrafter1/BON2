@@ -19,8 +19,8 @@ public enum VersionLookup {
     INSTANCE;
 
     //private static final String VERSION_JSON = "https://mcpbot.unascribed.com/versions.json";
-    //private static final String VERSION_JSON = "http://export.mcpbot.bspk.rs/versions.json";
-    private static final String VERSION_JSON = "https://192.99.194.128/versions.json";
+    //private static final String VERSION_JSON = "https://192.99.194.128/versions.json";
+    private static final String VERSION_JSON = "versions.json";
     private static final Gson GSON = new GsonBuilder().create();
 
     private VersionJson jsoncache;
@@ -45,9 +45,9 @@ public enum VersionLookup {
         refresh(VERSION_JSON);
     }
 
-    public void refresh(String mcp_url) throws IOException {
+    public void refresh(String mcpVersionPath) throws IOException {
         // To:
-        File mappingFile = new File(mcp_url);
+        File mappingFile = new File(mcpVersionPath);
         InputStream request = Files.newInputStream(mappingFile.toPath());
 // Then pass this 'request' stream to your InputStreamReader
 

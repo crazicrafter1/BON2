@@ -13,10 +13,10 @@ import javax.swing.filechooser.FileFilter;
 import com.github.parker8283.bon2.BON2Gui;
 
 public class BrowseListener extends MouseAdapter {
-    private BON2Gui parent;
-    private boolean isOpen;
-    private JTextField field;
-    private JFileChooser fileChooser;
+    private final BON2Gui parent;
+    private final boolean isOpen;
+    private final JTextField field;
+    private final JFileChooser fileChooser;
 
     public BrowseListener(BON2Gui parent, boolean isOpen, JTextField field) {
         this.parent = parent;

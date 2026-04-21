@@ -52,6 +52,7 @@ public class BON2Gui extends JFrame {
 
     public BON2Gui() {
         setMinimumSize(new Dimension(550, 210));
+
         setTitle("BON2");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(100, 100, 550, 210);
@@ -103,7 +104,8 @@ public class BON2Gui extends JFrame {
         try {
             VersionLookup.INSTANCE.refresh(); // make sure we've queried the json, as this will halt the main thread
         } catch (IOException e) {
-            JOptionPane.showMessageDialog(this, "Could not load MCP versions from web, mapping versions may be incomplete.", "Warning", JOptionPane.WARNING_MESSAGE);
+            //JOptionPane.showMessageDialog(this, "Could not load MCP versions from web, mapping versions may be incomplete.", "Warning", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Could not parse MCP versions, ensure it's in the same dir as this", "Warning", JOptionPane.WARNING_MESSAGE);
         }
         refresh.mouseClicked(null); // update the versions initially
         String forgeVer = prefs.get(PREFS_KEY_FORGEVER, "");
@@ -123,18 +125,18 @@ public class BON2Gui extends JFrame {
             }
         });
         
-        JButton buttonDownload = new JButton("Download");
-        buttonDownload.addActionListener(e -> {
-            GuiDownloadNew gui;
-            try {
-                gui = new GuiDownloadNew(refresh);
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(BON2Gui.this, ex, "Could not load mappings", JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-            gui.setLocation(getLocation());
-            gui.setVisible(true);
-        });
+        //JButton buttonDownload = new JButton("Download");
+        //buttonDownload.addActionListener(e -> {
+        //    GuiDownloadNew gui;
+        //    try {
+        //        gui = new GuiDownloadNew(refresh);
+        //    } catch (IOException ex) {
+        //        JOptionPane.showMessageDialog(BON2Gui.this, ex, "Could not load mappings", JOptionPane.ERROR_MESSAGE);
+        //        return;
+        //    }
+        //    gui.setLocation(getLocation());
+        //    gui.setVisible(true);
+        //});
 
         masterProgress = new JProgressBar();
 
@@ -164,8 +166,9 @@ public class BON2Gui extends JFrame {
                                 .addComponent(outputJarLoc, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 349, Short.MAX_VALUE)
                                 .addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
                                     .addComponent(forgeVersions, 0, 225, Short.MAX_VALUE)
-                                    .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addComponent(buttonDownload, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)))
+                                    //.addPreferredGap(ComponentPlacement.RELATED)
+                                    //.addComponent(buttonDownload, GroupLayout.PREFERRED_SIZE, 91, GroupLayout.PREFERRED_SIZE)
+                                ))
                             .addPreferredGap(ComponentPlacement.RELATED)
                             .addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false)
                                 .addComponent(btnRefreshVers, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -191,7 +194,7 @@ public class BON2Gui extends JFrame {
                     .addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
                         .addComponent(lblForgeVer)
                         .addComponent(btnRefreshVers)
-                        .addComponent(buttonDownload)
+                        //.addComponent(buttonDownload)
                         .addComponent(forgeVersions, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
                     .addPreferredGap(ComponentPlacement.RELATED)
                     .addComponent(btnStart)
@@ -203,6 +206,9 @@ public class BON2Gui extends JFrame {
         );
         
         contentPane.setLayout(gl_contentPane);
+
+        pack(); // sets size to fit all elements comfortably
+        setLocationRelativeTo(null); // centers the window to screen (middle)
     }
 
     public JTextField getOutputField() {

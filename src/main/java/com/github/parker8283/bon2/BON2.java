@@ -12,8 +12,8 @@ import com.google.common.base.MoreObjects;
 import joptsimple.OptionException;
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+//import org.apache.logging.log4j.LogManager;
+//import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,16 +27,18 @@ public class BON2 {
     public static final String VERSION = "Bearded Octo Nemesis v${DEV} by Parker8283. BON v1 by immibis.";
     public static File USER_GRADLE_FOLDER; // = new File(MoreObjects.firstNonNull(System.getenv("GRADLE_USER_HOME"), System.getProperty("user.home") + File.separator + ".gradle"));
 
-    public static Logger LOGGER;
+    //public static Logger LOGGER;
 
     public static void main(String[] args) {
         try {
-            LOGGER = LogManager.getLogger("BON2");
-            if (args.length > 0) {
-                parseArgs(args);
-            } else {
-                launchGui();
-            }
+            parseArgs(args);
+            //LOGGER = LogManager.getLogger("BON2");
+             //if (args.length > 0) {
+             //    parseArgs(args);
+             //} else {
+             //    //launchGui();
+             //    //logErr("");
+             //}
         } catch (Exception e) {
             logErr("Error", e);
             //e.printStackTrace();
@@ -45,20 +47,31 @@ public class BON2 {
 
     private static void parseArgs(String[] args) throws Exception {
         log(VERSION);
+
+        USER_GRADLE_FOLDER = new File(
+                MoreObjects.firstNonNull(
+                        System.getenv("GRADLE_USER_HOME"), System.getProperty("user.home") + File.separator + ".gradle"));
         
         OptionParser parser = new OptionParser();
         parser.accepts("help", "Shows this help menu").forHelp();
         parser.accepts("input", "The jar file or path to .java files to deobfuscate").withRequiredArg().required();
         parser.accepts("output", "The path for the converted jar or converted .java files. Otherwise appends \"-deobf\"").withRequiredArg();
-        parser.accepts("mappingsVer", "The version of the mappings to use. Must exist in Gradle cache. Format is \"mcVer-forgeVer-mappingVer\". For use with FG2, use \"1.8(.8)-mappingVer\". This is a temporary solution until BON 2.3.").withRequiredArg().required();
+        parser.accepts("mappingsVer", "The version of the mappings to use. Must match Gradle cache. Format is \"mcVer-forgeVer-mappingVer\". For use with FG2, use \"1.8(.8)-mappingVer\".").withRequiredArg().required();
         parser.accepts("mappings", "Lists detected mappings").forHelp();
-        parser.accepts("versionsJson", "versions.json path, see https://mcpbot.unascribed.com/").withRequiredArg().required();
+        parser.accepts("versionsJson", "versions.json path, see https://mcpbot.unascribed.com/").withRequiredArg();
         parser.accepts("gradlePath", "The direct path to your global .gradle").withRequiredArg();
+        parser.accepts("gui", "Launch easy GUI!").forHelp();
 
         try {
             OptionSet options = parser.parse(args);
 
-            if(options.has("help")) {
+            if (options.has("gui")) {
+                log("Launching gui...");
+                launchGui();
+                return;
+            }
+
+            if (options.has("help")) {
                 parser.printHelpOn(System.out);
                 log("Example usage:");
                 log("--versionsJson \"/home/bob/IdeaProjects/BON2/mcp-versions.json\" --mappingsVer 1.12-stable_39 --inputJar \"/home/bob/Documents/TinkersConstruct.jar\"");
@@ -69,10 +82,6 @@ public class BON2 {
             
             if (options.has("gradlePath")) {
                 USER_GRADLE_FOLDER = new File((String)options.valueOf("gradlePath"));
-            } else {
-                USER_GRADLE_FOLDER = new File(
-                        MoreObjects.firstNonNull(
-                                System.getenv("GRADLE_USER_HOME"), System.getProperty("user.home") + File.separator + ".gradle"));
             }
 
             if (!USER_GRADLE_FOLDER.exists() || !USER_GRADLE_FOLDER.isDirectory()) {
@@ -81,21 +90,24 @@ public class BON2 {
             }
 
             // find versions
-            
-            boolean successVer = false;
+
             try {
                 if (options.has("versionsJson")) {
                     VersionLookup.INSTANCE.refresh((String) options.valueOf("versionsJson"));
-                    successVer = true;
-                }
-            } catch (Exception e1) {
-                logErr("Failed to find MCP versions.json");
-                logErr("Must be a valid path to versions.json");
-                e1.printStackTrace();
-            } finally {
-                if (!successVer) {
+                } else {
                     VersionLookup.INSTANCE.refresh();
                 }
+            } catch (Exception e1) {
+                logErr("Failed to parse MCP versions.json");
+                //logErr("Must be a valid path to versions.json");
+                //mcp mappings version.json
+                logErr("try googling 'mcp mappings version.json' and download a file containing your version");
+                e1.printStackTrace();
+                return;
+            } finally {
+                //if (!successVer) {
+                //    VersionLookup.INSTANCE.refresh();
+                //}
             }
             
             List<MappingVersion> mappings = BONUtils.buildValidMappings();
@@ -139,7 +151,7 @@ public class BON2 {
 
             // test if input is a jar or path to .java files
             String inputPathString = (String)options.valueOf("input");
-            String outputPathString = options.has("output") ? (String)options.valueOf("output") : inputPathString + ".deobf";
+            String outputPathString = options.has("output") ? (String)options.valueOf("output") : inputPathString + ".mcp-mappings";
 
             //File inputPath = new File(inputPathString);
             Path inputPath = Path.of(inputPathString);
@@ -207,24 +219,24 @@ public class BON2 {
     }
 
     public static void log(String message) {
-        //System.out.println(message);
-        LOGGER.info(message);
+        System.out.println(message);
+        //LOGGER.info(message);
     }
 
     public static void logErr(String message) {
-        //System.err.println(message);
-        LOGGER.error(message);
+        System.out.println(message);
+        //LOGGER.error(message);
     }
 
     public static void logErr(String message, Throwable t) {
-        //System.err.println(message);
-        //t.printStackTrace();
-        LOGGER.error(message, t);
+        System.out.println(message);
+        t.printStackTrace();
+        //LOGGER.error(message, t);
     }
 
     private static void launchGui() {
-        log(VERSION);
-        log("No arguments passed. Launching gui...");
+        //log(VERSION);
+        //log("No arguments passed. Launching gui...");
         EventQueue.invokeLater(new Runnable() {
             @Override
             public void run() {

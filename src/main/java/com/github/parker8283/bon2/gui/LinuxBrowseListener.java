@@ -12,37 +12,39 @@ import javax.swing.JTextField;
 import com.github.parker8283.bon2.BON2Gui;
 
 public class LinuxBrowseListener extends MouseAdapter{
-    private BON2Gui parent;
-    private boolean isOpen;
-    private JTextField field;
-    private FileDialog fd;
+    private final BON2Gui parent;
+    private final boolean isOpen;
+    private final JTextField field;
+    private final FileDialog fd;
     
     public LinuxBrowseListener(BON2Gui parent, boolean isOpen, JTextField field) {
-      this.parent = parent;
-      this.isOpen = isOpen;
-      this.field = field;
-      
-      if (isOpen) {
-          this.fd = new FileDialog(this.parent, "Please Select an Input File", FileDialog.LOAD);
-      } else {
-          this.fd = new FileDialog(this.parent, "Please Select an Output File", FileDialog.SAVE); 
-      }
-      
-      fd.setFilenameFilter( (dir, name) -> name.toLowerCase().endsWith(".jar"));
-      
-      String key = isOpen ? BON2Gui.PREFS_KEY_OPEN_LOC : BON2Gui.PREFS_KEY_SAVE_LOC;
-      String savedDir = parent.prefs.get(key, Paths.get("").toAbsolutePath().toString());
-      File currentDir = new File(savedDir);
-      
-      if (!Paths.get(savedDir).getRoot().toFile().exists()) {
-          currentDir = Paths.get("").toAbsolutePath().toFile();
-      }
-      
-      while (!currentDir.isDirectory()) {
-          currentDir = currentDir.getParentFile();
-      }
-      
-      fd.setDirectory(currentDir.getPath());
+        this.parent = parent;
+        this.isOpen = isOpen;
+        this.field = field;
+
+        if (isOpen) {
+            this.fd = new FileDialog(this.parent, "Please Select an Input File", FileDialog.LOAD);
+        } else {
+            this.fd = new FileDialog(this.parent, "Please Select an Output File", FileDialog.SAVE);
+        }
+
+        fd.setFilenameFilter( (dir, name) -> name.toLowerCase().endsWith(".jar"));
+
+        String key = isOpen ? BON2Gui.PREFS_KEY_OPEN_LOC : BON2Gui.PREFS_KEY_SAVE_LOC;
+        String savedDir = parent.prefs.get(key, Paths.get("").toAbsolutePath().toString());
+        File currentDir = new File(savedDir);
+
+        if (!Paths.get(savedDir).getRoot().toFile().exists()) {
+            currentDir = Paths.get("").toAbsolutePath().toFile();
+        }
+
+        while (!currentDir.isDirectory()) {
+            currentDir = currentDir.getParentFile();
+        }
+
+        fd.setDirectory(currentDir.getPath());
+        // TODO does not center as intended... aligns to bottom right of screen
+        //fd.setLocationRelativeTo(null); // center to screen
     }
     
     @Override
